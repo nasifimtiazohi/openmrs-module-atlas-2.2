@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module configVersion="1.2">
+	
+	<!-- Atlas Module Properties -->
+	<id>${project.parent.artifactId}</id>
+	<name>${project.parent.name}</name>
+	<version>${project.parent.version}</version>
+	<package>${project.parent.groupId}.${project.parent.artifactId}</package>
+	<author>Victor Chircu</author>
+	<description>${project.parent.description}</description>
+
+	<activator>${project.parent.groupId}.${project.parent.artifactId}.AtlasModuleActivator</activator>
+	
+	<!-- /Atlas Module Properties -->
+	
+	<require_version>${openMRSVersion}</require_version>
+	
+	<aware_of_modules>
+	    <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+	</aware_of_modules>
+
+	<!-- Extensions -->
+	<extension>
+		<point>org.openmrs.admin.list</point>
+		<class>@MODULE_PACKAGE@.extension.html.AdminList</class>
+	</extension>
+	
+	<privilege>
+		<name>Manage Atlas Data</name>
+		<description>Allows user to set/update/delete atlas data</description>
+	</privilege>
+
+    <!-- Required Modules -->
+    <require_modules>
+        <require_module>
+            org.openmrs.module.uiframework
+        </require_module>
+    </require_modules>
+    <!-- / Required Modules -->
+
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfPatients</property>
+		<defaultValue>?</defaultValue>
+		<description>
+		    Stores the last calculated count of non-voided patients in the system ("?" if never calculated).
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfObservations</property>
+		<defaultValue>?</defaultValue>
+		<description>
+		    Stores the last calculated count of non-voided observations in the system ("?" if never calculated).
+		</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfEncounters</property>
+		<defaultValue>?</defaultValue>
+		<description>
+		    Stores the last calculated count of non-voided encounters in the system ("?" if never calculated).
+		</description>
+	</globalProperty>
+    <globalProperty>
+        <property>@MODULE_ID@.sendCounts</property>
+        <defaultValue>false</defaultValue>
+        <description>
+            Send counts to OpenMRS Atlas.
+        </description>
+    </globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.stopAskingToConfigure</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			When set to 'true', we stop pestering admins to configure the atlas.
+		</description>
+	</globalProperty>
+	
+	
+	
+	<dwr>
+		<allow>
+			<create creator="new" javascript="DWRAtlasService">
+				<param name="class" value="org.openmrs.module.@MODULE_ID@.web.dwr.DWRAtlasService"/>
+				<include method="saveAtlasBubbleData"/>
+				<include method="enableAtlasModule"/>
+				<include method="disableAtlasModule"/>
+				<include method="updateAndGetStatistics"/>
+				<include method="getJsonData"/>
+				<include method="postAtlasData"/>
+				<include method="getIsDirty"/>
+                <include method="setSendCounts"/>
+			</create>
+		</allow>
+
+		<signatures>
+			<![CDATA[import @MODULE_PACKAGE@.web.dwr.DWRAtlasService;
+			DWRAtlasService.disableAtlasModule();
+			]]>
+		</signatures>	
+	</dwr>
+
+	
+	<!-- Internationalization -->
+	<!-- All message codes should start with @MODULE_ID@.* -->
+	<messages>
+		<lang>en</lang>
+		<file>messages.properties</file>
+	</messages>
+	<messages>
+		<lang>fr</lang>
+		<file>messages_fr.properties</file>
+	</messages>
+	<messages>
+		<lang>es</lang>
+		<file>messages_es.properties</file>
+	</messages>
+	<!-- /Internationalization -->
+
+
+</module>
